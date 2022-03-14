@@ -4,7 +4,6 @@ const axios = require("axios");
 const getUser = async (req, res) => {
   try {
     const { params } = req;
-    console.log("hello");
     const { id } = params;
     const metadata = await axios.get(`http://localhost:3000/metadata/${id}`);
 
@@ -13,7 +12,11 @@ const getUser = async (req, res) => {
     if (!find) {
       return res.sendStatus(404);
     }
-    find["metadata"] = metadata.data;
+    const IPs = []
+    metadata.data.data.forEach(el => {
+      IPs.push(el.ip_address)
+    })
+    find["ip_addresses"] = IPs;
     res.status(200).send({ status: true, data: find });
   } catch (err) {
     res.send(err.message);
@@ -23,10 +26,9 @@ const getUser = async (req, res) => {
 const getUsersWithIp = async (req, res) => {
   try {
     const metadata = await axios.get(`http://localhost:3000/metadata`);
-    console.log(metadata.data)
     users.forEach((el) => {
       const meta = metadata.data.data.find((elm) => elm.id == el.id);
-      el["metaData"] = meta;
+      el["ip_addresses"] = meta.ip_address
     });
     res.send(users);
   } catch (error) {

@@ -10,8 +10,8 @@ const getMetaDataById = (req, res) => {
 
   const find = metaData.filter((el) => el.id == id);
   // console.log(find, id);
-  if (!find) {
-    return res.sendStatus(404);
+  if (!find || find.length == 0) {
+    return res.status(404).send({status: "not exist", message: "meta data not exist"});
   }
   res.status(200).send({ status: true, data: find });
 };
